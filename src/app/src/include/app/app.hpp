@@ -31,11 +31,6 @@ class FirstApp
     std::unique_ptr<LvePipeline> pipeline_;
     VkPipelineLayout pipeline_layout_;
     std::pmr::vector<VkCommandBuffer> command_buffer_;
-
-    // LvePipeline pipeline_{device_,
-    //                      "../../../shaders/simple_shader.vert.spv",
-    //                      "../../../shaders/simple_shader.frag.spv",
-    //                      PipelineConfigInfo::create_default(WIDTH, HEIGHT)};
 };
 } // namespace lve
 

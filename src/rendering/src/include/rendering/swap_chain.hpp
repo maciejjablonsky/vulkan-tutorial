@@ -58,12 +58,14 @@ class LveSwapChain
 
     float extentAspectRatio()
     {
-        return static_cast<float>(swapChainExtent.width) / static_cast<float>(swapChainExtent.height);
+        return static_cast<float>(swapChainExtent.width) /
+               static_cast<float>(swapChainExtent.height);
     }
     VkFormat findDepthFormat();
 
     VkResult acquireNextImage(uint32_t* imageIndex);
-    VkResult submitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex);
+    VkResult submitCommandBuffers(const VkCommandBuffer* buffers,
+                                  uint32_t* imageIndex);
 
   private:
     void createSwapChain();
@@ -74,8 +76,10 @@ class LveSwapChain
     void createSyncObjects();
 
     // Helper functions
-    VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
-    VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+    VkSurfaceFormatKHR chooseSwapSurfaceFormat(
+        const std::vector<VkSurfaceFormatKHR>& availableFormats);
+    VkPresentModeKHR chooseSwapPresentMode(
+        const std::vector<VkPresentModeKHR>& availablePresentModes);
     VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 
     VkFormat swapChainImageFormat;

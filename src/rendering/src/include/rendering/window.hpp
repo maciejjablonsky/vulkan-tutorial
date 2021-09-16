@@ -19,19 +19,20 @@ class LveWindow
     {
         return glfwWindowShouldClose(window_.get());
     }
-    
+
     void create_window_surface(VkInstance instance, VkSurfaceKHR* surface);
     VkExtent2D get_extent()
     {
         return {static_cast<uint32_t>(width_), static_cast<uint32_t>(height_)};
     }
+
   private:
     void init_window();
 
     const int width_;
     const int height_;
     std::string window_name_;
-    
+
     struct glfw_window_deleter
     {
         void operator()(GLFWwindow* window)

@@ -117,14 +117,14 @@ void FirstApp::draw_frame()
     auto result = swap_chain_.acquireNextImage(&image_index);
     if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
     {
-        throw std::runtime_error("Failed to acquire swap chain image!"); 
+        throw std::runtime_error("Failed to acquire swap chain image!");
     }
 
     result = swap_chain_.submitCommandBuffers(&command_buffer_[image_index],
                                               &image_index);
     if (result != VK_SUCCESS)
     {
-        throw std::runtime_error("Failed to present swap chain image!"); 
+        throw std::runtime_error("Failed to present swap chain image!");
     }
 }
 } // namespace lve

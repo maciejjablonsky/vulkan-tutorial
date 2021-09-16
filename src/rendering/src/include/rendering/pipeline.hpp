@@ -36,6 +36,7 @@ class LvePipeline
                      // which loses config.color_blend_info.pAttachments
     ~LvePipeline();
     void bind(VkCommandBuffer command_buffer);
+
   private:
     void create_graphics_pipeline(const std::filesystem::path& vertex_path,
                                   const std::filesystem::path& fragment_path,

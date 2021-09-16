@@ -71,7 +71,8 @@ class LveDevice
     {
         return querySwapChainSupport(physicalDevice);
     }
-    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+    uint32_t findMemoryType(uint32_t typeFilter,
+                            VkMemoryPropertyFlags properties);
     QueueFamilyIndices findPhysicalQueueFamilies()
     {
         return findQueueFamilies(physicalDevice);
@@ -89,8 +90,11 @@ class LveDevice
     VkCommandBuffer beginSingleTimeCommands();
     void endSingleTimeCommands(VkCommandBuffer commandBuffer);
     void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-    void copyBufferToImage(
-        VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount);
+    void copyBufferToImage(VkBuffer buffer,
+                           VkImage image,
+                           uint32_t width,
+                           uint32_t height,
+                           uint32_t layerCount);
 
     void createImageWithInfo(const VkImageCreateInfo& imageInfo,
                              VkMemoryPropertyFlags properties,
@@ -112,7 +116,8 @@ class LveDevice
     std::vector<const char*> getRequiredExtensions();
     bool checkValidationLayerSupport();
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-    void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+    void populateDebugMessengerCreateInfo(
+        VkDebugUtilsMessengerCreateInfoEXT& createInfo);
     void hasGflwRequiredInstanceExtensions();
     bool checkDeviceExtensionSupport(VkPhysicalDevice device);
     SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
@@ -128,8 +133,10 @@ class LveDevice
     VkQueue graphicsQueue_;
     VkQueue presentQueue_;
 
-    const std::vector<const char*> validationLayers = {"VK_LAYER_KHRONOS_validation"};
-    const std::vector<const char*> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+    const std::vector<const char*> validationLayers = {
+        "VK_LAYER_KHRONOS_validation"};
+    const std::vector<const char*> deviceExtensions = {
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 };
 
 } // namespace lve
