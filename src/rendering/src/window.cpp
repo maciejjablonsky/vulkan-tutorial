@@ -27,4 +27,13 @@ void LveWindow::init_window()
         throw std::runtime_error("Failed to create GLFWwindow.");
     }
 }
+
+void LveWindow::create_window_surface(VkInstance instance, VkSurfaceKHR* surface)
+{
+
+    if (glfwCreateWindowSurface(instance, window_.get(), nullptr, surface) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create window surface.");
+    }
+}
 } // namespace lve

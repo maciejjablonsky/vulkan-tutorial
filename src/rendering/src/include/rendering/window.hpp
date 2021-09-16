@@ -19,6 +19,8 @@ class LveWindow
     {
         return glfwWindowShouldClose(window_.get());
     }
+    
+    void create_window_surface(VkInstance instance, VkSurfaceKHR* surface);
 
   private:
     void init_window();

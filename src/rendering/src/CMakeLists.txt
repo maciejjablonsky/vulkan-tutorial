@@ -8,9 +8,11 @@ set(SOURCES
     window.cpp
     include/rendering/pipeline.hpp
     pipeline.cpp
+    include/rendering/device.hpp
+    device.cpp
 )
 
 add_library(rendering ${SOURCES})
 target_link_libraries(rendering PUBLIC glfw Vulkan::Vulkan file fmt::fmt)
 target_include_directories(rendering PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_compile_features(rendering PUBLIC cxx_std_17)
+target_compile_features(rendering PUBLIC cxx_std_20)
