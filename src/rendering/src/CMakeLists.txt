@@ -10,6 +10,8 @@ set(SOURCES
     pipeline.cpp
     include/rendering/device.hpp
     device.cpp
+    include/rendering/swap_chain.hpp
+    swap_chain.cpp
 )
 
 add_library(rendering ${SOURCES})

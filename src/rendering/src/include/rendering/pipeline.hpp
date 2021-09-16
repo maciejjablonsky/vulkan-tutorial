@@ -11,7 +11,6 @@ struct PipelineConfigInfo
 {
     VkViewport viewport;
     VkRect2D scissor;
-    VkPipelineViewportStateCreateInfo viewport_info;
     VkPipelineInputAssemblyStateCreateInfo input_assembly_info;
     VkPipelineRasterizationStateCreateInfo rasterization_info;
     VkPipelineMultisampleStateCreateInfo multisample_info;
@@ -27,18 +26,23 @@ struct PipelineConfigInfo
 class LvePipeline
 {
   public:
-    LvePipeline(LveDevice& device,
-                const std::filesystem::path& vertex_path,
-                const std::filesystem::path& fragment_path,
-                const PipelineConfigInfo& config);
+    LvePipeline(
+        LveDevice& device,
+        const std::filesystem::path& vertex_path,
+        const std::filesystem::path& fragment_path,
+        PipelineConfigInfo
+            config); // note: config must be passed by value, because
+                     // otherwise passing by const & produces some optimization
+                     // which loses config.color_blend_info.pAttachments
     ~LvePipeline();
-
+    void bind(VkCommandBuffer command_buffer);
   private:
     void create_graphics_pipeline(const std::filesystem::path& vertex_path,
                                   const std::filesystem::path& fragment_path,
-                                  const PipelineConfigInfo& config);
+                                  PipelineConfigInfo config);
 
-    void create_shader_module(const std::pmr::vector<std::byte>& code, VkShaderModule* shade_module);
+    void create_shader_module(const std::pmr::vector<std::byte>& code,
+                              VkShaderModule* shade_module);
 
     LveDevice& device_;
     VkPipeline graphics_pipeline_;
