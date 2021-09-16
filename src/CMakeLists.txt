@@ -1,3 +1,5 @@
 add_subdirectory(vulkan-demo)
+add_subdirectory(file)
 add_subdirectory(rendering)
 add_subdirectory(app)
+add_subdirectory(shaders)
