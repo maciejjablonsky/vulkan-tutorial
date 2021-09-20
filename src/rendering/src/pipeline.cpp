@@ -2,6 +2,7 @@
 #include <cassert>
 #include <file/io.hpp>
 #include <fmt/format.h>
+#include <rendering/model.hpp>
 #include <rendering/pipeline.hpp>
 
 namespace lve
@@ -61,12 +62,18 @@ void LvePipeline::create_graphics_pipeline(
                         .pName               = "main",
                         .pSpecializationInfo = nullptr};
 
+    const auto binding_descriptions =
+        LveModel::Vertex::get_binding_description();
+    const auto attribute_descriptions =
+        LveModel::Vertex::get_attribute_descriptions();
     VkPipelineVertexInputStateCreateInfo vertex_input_info{
         .sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
-        .vertexBindingDescriptionCount   = 0,
-        .pVertexBindingDescriptions      = nullptr,
-        .vertexAttributeDescriptionCount = 0,
-        .pVertexAttributeDescriptions    = nullptr,
+        .vertexBindingDescriptionCount =
+            static_cast<uint32_t>(binding_descriptions.size()),
+        .pVertexBindingDescriptions = binding_descriptions.data(),
+        .vertexAttributeDescriptionCount =
+            static_cast<uint32_t>(attribute_descriptions.size()),
+        .pVertexAttributeDescriptions = attribute_descriptions.data(),
     };
 
     VkPipelineViewportStateCreateInfo viewport_info = {
