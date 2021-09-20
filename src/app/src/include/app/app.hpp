@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <rendering/device.hpp>
+#include <rendering/model.hpp>
 #include <rendering/pipeline.hpp>
 #include <rendering/swap_chain.hpp>
 #include <rendering/window.hpp>
@@ -20,6 +21,7 @@ class FirstApp
     ~FirstApp();
 
   private:
+    void load_models();
     void create_pipeline_layout();
     void create_pipeline();
     void create_command_buffers();
@@ -31,6 +33,7 @@ class FirstApp
     std::unique_ptr<LvePipeline> pipeline_;
     VkPipelineLayout pipeline_layout_;
     std::pmr::vector<VkCommandBuffer> command_buffer_;
+    std::unique_ptr<LveModel> model_;
 };
 } // namespace lve
 

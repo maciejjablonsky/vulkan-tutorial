@@ -1,11 +1,13 @@
 #include <app/app.hpp>
 #include <array>
+#include <cmath>
 
 namespace lve
 {
 
 FirstApp::FirstApp()
 {
+    load_models();
     create_pipeline_layout();
     create_pipeline();
     create_command_buffers();
@@ -25,6 +27,39 @@ void FirstApp::run()
     }
 
     vkDeviceWaitIdle(device_.device());
+}
+
+void sierpinski(std::pmr::vector<LveModel::Vertex>& vertices,
+                int depth,
+                glm::vec2 left,
+                glm::vec2 right,
+                glm::vec2 top)
+{
+    if (depth <= 0)
+    {
+        vertices.push_back({top});
+        vertices.push_back({right});
+        vertices.push_back({left});
+    }
+    else
+    {
+        auto left_top   = 0.5f * (left + top);
+        auto right_top  = 0.5f * (right + top);
+        auto left_right = 0.5f * (left + right);
+        sierpinski(vertices, depth - 1, left, left_right, left_top);
+        sierpinski(vertices, depth - 1, left_right, right, right_top);
+        sierpinski(vertices, depth - 1, left_top, right_top, top);
+    }
+}
+
+void FirstApp::load_models()
+{
+    // std::pmr::vector<LveModel::Vertex> vertices{
+    //    {{0.0f, -0.5f}}, {{0.5f, 0.5f}}, {{-0.5f, 0.5f}}};
+    constexpr auto depth = 8;
+    std::pmr::vector<LveModel::Vertex> vertices(3 * (std::powl(3, depth)));
+    sierpinski(vertices, depth, {-1.f, 1.f}, {1.f, 1.f}, {0.0f, -1.f});
+    model_ = std::make_unique<LveModel>(device_, vertices);
 }
 
 void FirstApp::create_pipeline_layout()
@@ -102,7 +137,8 @@ void FirstApp::create_command_buffers()
         vkCmdBeginRenderPass(
             command_buffer_[i], &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
         pipeline_->bind(command_buffer_[i]);
-        vkCmdDraw(command_buffer_[i], 3, 1, 0, 0);
+        model_->bind(command_buffer_[i]);
+        model_->draw(command_buffer_[i]);
 
         vkCmdEndRenderPass(command_buffer_[i]);
         if (vkEndCommandBuffer(command_buffer_[i]) != VK_SUCCESS)
