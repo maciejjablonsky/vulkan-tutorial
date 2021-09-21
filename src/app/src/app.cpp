@@ -37,9 +37,9 @@ void sierpinski(std::pmr::vector<LveModel::Vertex>& vertices,
 {
     if (depth <= 0)
     {
-        vertices.push_back({top});
-        vertices.push_back({right});
-        vertices.push_back({left});
+        vertices.push_back({top, {1.f, 0.f, 0.f}});
+        vertices.push_back({right, {0.f, 1.f, 0.f}});
+        vertices.push_back({left, {0.f, 0.f, 1.f}});
     }
     else
     {
@@ -54,13 +54,15 @@ void sierpinski(std::pmr::vector<LveModel::Vertex>& vertices,
 
 void FirstApp::load_models()
 {
-    // std::pmr::vector<LveModel::Vertex> vertices{
-    //    {{0.0f, -0.5f}}, {{0.5f, 0.5f}}, {{-0.5f, 0.5f}}};
-    constexpr auto depth = 8;
-    std::pmr::vector<LveModel::Vertex> vertices(3 * (std::powl(3, depth)));
-    sierpinski(vertices, depth, {-1.f, 1.f}, {1.f, 1.f}, {0.0f, -1.f});
+    std::pmr::vector<LveModel::Vertex> vertices{
+        {{0.0f, -0.5f}, {1.f, 0.f, 0.f}},
+        {{0.5f, 0.5f}, {0.f, 1.f, 0.f}},
+        {{-0.5f, 0.5f}, {0.f, 0.f, 1.f}}};
+    constexpr auto depth = 5;
+    // std::pmr::vector<LveModel::Vertex> vertices(3 * (std::powl(3, depth)));
+    // sierpinski(vertices, depth, {-1.f, 1.f}, {1.f, 1.f}, {0.0f, -1.f});
     model_ = std::make_unique<LveModel>(device_, vertices);
-}
+}   
 
 void FirstApp::create_pipeline_layout()
 {
