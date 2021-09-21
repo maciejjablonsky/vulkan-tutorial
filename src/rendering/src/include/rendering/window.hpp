@@ -25,13 +25,25 @@ class LveWindow
     {
         return {static_cast<uint32_t>(width_), static_cast<uint32_t>(height_)};
     }
+    bool was_window_resized() const
+    {
+        return framebuffer_resized_;
+    }
+
+    void reset_window_resized_flag()
+    {
+        framebuffer_resized_ = false;
+    }
 
   private:
     void init_window();
-
-    const int width_;
-    const int height_;
+    static void framebuffer_resized_callback(GLFWwindow* window,
+                                             int width,
+                                             int height);
+    int width_;
+    int height_;
     std::string window_name_;
+    bool framebuffer_resized_ = false;
 
     struct glfw_window_deleter
     {
