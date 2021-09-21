@@ -11,3 +11,5 @@ target_include_directories(app PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_executable(app_client main.cpp)
 target_link_libraries(app_client PRIVATE app fmt::fmt)
+
+add_dependencies(app_client shaders)
