@@ -9,38 +9,39 @@ namespace lve
 {
 struct PipelineConfigInfo
 {
-    VkViewport viewport;
-    VkRect2D scissor;
+    PipelineConfigInfo()                          = default;
+    PipelineConfigInfo(const PipelineConfigInfo&) = delete;
+    PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
+
+    VkPipelineViewportStateCreateInfo viewport_info;
     VkPipelineInputAssemblyStateCreateInfo input_assembly_info;
     VkPipelineRasterizationStateCreateInfo rasterization_info;
     VkPipelineMultisampleStateCreateInfo multisample_info;
     VkPipelineColorBlendAttachmentState color_blend_attachment;
     VkPipelineColorBlendStateCreateInfo color_blend_info;
     VkPipelineDepthStencilStateCreateInfo depth_stencil_info;
+    std::vector<VkDynamicState> dynamic_state_enables;
+    VkPipelineDynamicStateCreateInfo dynamic_state_info;
     VkPipelineLayout pipeline_layout = nullptr;
     VkRenderPass render_pass         = nullptr;
     uint32_t subpass                 = 0;
-    static PipelineConfigInfo create_default(uint32_t width, uint32_t height);
 };
 
 class LvePipeline
 {
   public:
-    LvePipeline(
-        LveDevice& device,
-        const std::filesystem::path& vertex_path,
-        const std::filesystem::path& fragment_path,
-        PipelineConfigInfo
-            config); // note: config must be passed by value, because
-                     // otherwise passing by const & produces some optimization
-                     // which loses config.color_blend_info.pAttachments
+    LvePipeline(LveDevice& device,
+                const std::filesystem::path& vertex_path,
+                const std::filesystem::path& fragment_path,
+                const PipelineConfigInfo& config);
     ~LvePipeline();
     void bind(VkCommandBuffer command_buffer);
+    static void default_pipeline_config_info(PipelineConfigInfo& config_info);
 
   private:
     void create_graphics_pipeline(const std::filesystem::path& vertex_path,
                                   const std::filesystem::path& fragment_path,
-                                  PipelineConfigInfo config);
+                                  const PipelineConfigInfo& config);
 
     void create_shader_module(const std::pmr::vector<std::byte>& code,
                               VkShaderModule* shade_module);
