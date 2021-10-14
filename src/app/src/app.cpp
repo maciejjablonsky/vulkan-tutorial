@@ -185,7 +185,7 @@ void FirstApp::draw_frame()
     result = swap_chain_->submitCommandBuffers(&command_buffer_[image_index],
                                                &image_index);
     if (const auto v = {VK_ERROR_OUT_OF_DATE_KHR, VK_SUBOPTIMAL_KHR};
-        std::ranges::any_of(v, [&result](auto val) { return result == val; }))
+        std::ranges::any_of(v, [&result](auto val) { return result == val; }) || window_.was_window_resized())
     {
         window_.reset_window_resized_flag();
         recreate_swap_chain();
