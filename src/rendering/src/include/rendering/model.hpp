@@ -13,7 +13,7 @@ class LveModel
     struct Vertex
     {
         glm::vec2 position;
-
+        glm::vec3 color;
         static std::pmr::vector<VkVertexInputBindingDescription>
         get_binding_description();
         static std::pmr::vector<VkVertexInputAttributeDescription>

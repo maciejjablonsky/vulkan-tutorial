@@ -18,7 +18,7 @@ void LveWindow::init_window()
 {
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
     if (auto* ptr = glfwCreateWindow(
             width_, height_, window_name_.c_str(), nullptr, nullptr);
         ptr)
@@ -29,6 +29,8 @@ void LveWindow::init_window()
     {
         throw std::runtime_error("Failed to create GLFWwindow.");
     }
+    glfwSetWindowUserPointer(window_.get(), this);
+    glfwSetFramebufferSizeCallback(window_.get(), framebuffer_resized_callback);
 }
 
 void LveWindow::create_window_surface(VkInstance instance,
@@ -40,5 +42,15 @@ void LveWindow::create_window_surface(VkInstance instance,
     {
         throw std::runtime_error("Failed to create window surface.");
     }
+}
+void LveWindow::framebuffer_resized_callback(GLFWwindow* window,
+                                             int width,
+                                             int height)
+{
+    auto lve_window =
+        reinterpret_cast<LveWindow*>(glfwGetWindowUserPointer(window));
+    lve_window->framebuffer_resized_ = true;
+    lve_window->width_               = width;
+    lve_window->height_              = height;
 }
 } // namespace lve

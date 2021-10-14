@@ -9,7 +9,7 @@ FirstApp::FirstApp()
 {
     load_models();
     create_pipeline_layout();
-    create_pipeline();
+    recreate_swap_chain();
     create_command_buffers();
 }
 
@@ -37,9 +37,9 @@ void sierpinski(std::pmr::vector<LveModel::Vertex>& vertices,
 {
     if (depth <= 0)
     {
-        vertices.push_back({top});
-        vertices.push_back({right});
-        vertices.push_back({left});
+        vertices.push_back({top, {1.f, 0.f, 0.f}});
+        vertices.push_back({right, {0.f, 1.f, 0.f}});
+        vertices.push_back({left, {0.f, 0.f, 1.f}});
     }
     else
     {
@@ -54,11 +54,13 @@ void sierpinski(std::pmr::vector<LveModel::Vertex>& vertices,
 
 void FirstApp::load_models()
 {
-    // std::pmr::vector<LveModel::Vertex> vertices{
-    //    {{0.0f, -0.5f}}, {{0.5f, 0.5f}}, {{-0.5f, 0.5f}}};
-    constexpr auto depth = 8;
-    std::pmr::vector<LveModel::Vertex> vertices(3 * (std::powl(3, depth)));
-    sierpinski(vertices, depth, {-1.f, 1.f}, {1.f, 1.f}, {0.0f, -1.f});
+    std::pmr::vector<LveModel::Vertex> vertices{
+        {{0.0f, -0.5f}, {1.f, 0.f, 0.f}},
+        {{0.5f, 0.5f}, {0.f, 1.f, 0.f}},
+        {{-0.5f, 0.5f}, {0.f, 0.f, 1.f}}};
+    constexpr auto depth = 5;
+    // std::pmr::vector<LveModel::Vertex> vertices(3 * (std::powl(3, depth)));
+    // sierpinski(vertices, depth, {-1.f, 1.f}, {1.f, 1.f}, {0.0f, -1.f});
     model_ = std::make_unique<LveModel>(device_, vertices);
 }
 
@@ -82,8 +84,8 @@ void FirstApp::create_pipeline_layout()
 void FirstApp::create_pipeline()
 {
     auto pipeline_config = PipelineConfigInfo::create_default(
-        swap_chain_.width(), swap_chain_.height());
-    pipeline_config.render_pass     = swap_chain_.getRenderPass();
+        swap_chain_->width(), swap_chain_->height());
+    pipeline_config.render_pass     = swap_chain_->getRenderPass();
     pipeline_config.pipeline_layout = pipeline_layout_;
     pipeline_ =
         std::make_unique<LvePipeline>(device_,
@@ -92,9 +94,23 @@ void FirstApp::create_pipeline()
                                       pipeline_config);
 }
 
+void FirstApp::recreate_swap_chain()
+{
+    auto extent = window_.get_extent();
+    while (extent.width == 0 || extent.height == 0)
+    {
+        extent = window_.get_extent();
+        glfwWaitEvents();
+    }
+
+    vkDeviceWaitIdle(device_.device());
+    swap_chain_ = std::make_unique<LveSwapChain>(device_, extent);
+    create_pipeline();
+}
+
 void FirstApp::create_command_buffers()
 {
-    command_buffer_.resize(swap_chain_.imageCount());
+    command_buffer_.resize(swap_chain_->imageCount());
     VkCommandBufferAllocateInfo alloc_info{
         .sType              = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
         .commandPool        = device_.getCommandPool(),
@@ -107,57 +123,75 @@ void FirstApp::create_command_buffers()
     {
         throw std::runtime_error("Failed to allocate command buffers.");
     }
+}
 
-    for (auto i = 0; i < command_buffer_.size(); ++i)
+void FirstApp::record_command_buffer(int image_index)
+{
+    VkCommandBufferBeginInfo begin_info{
+        .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
+    if (vkBeginCommandBuffer(command_buffer_[image_index], &begin_info) !=
+        VK_SUCCESS)
     {
-        VkCommandBufferBeginInfo begin_info{
-            .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
-        if (vkBeginCommandBuffer(command_buffer_[i], &begin_info) != VK_SUCCESS)
-        {
-            throw std::runtime_error(
-                "Failed to begin recording command buffer.");
-        }
+        throw std::runtime_error("Failed to begin recording command buffer.");
+    }
 
-        VkRenderPassBeginInfo render_pass_info{
-            .sType       = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
-            .renderPass  = swap_chain_.getRenderPass(),
-            .framebuffer = swap_chain_.getFrameBuffer(i),
-            .renderArea  = {.offset = {0, 0},
-                           .extent = swap_chain_.getSwapChainExtent()},
-        };
+    VkRenderPassBeginInfo render_pass_info{
+        .sType       = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
+        .renderPass  = swap_chain_->getRenderPass(),
+        .framebuffer = swap_chain_->getFrameBuffer(image_index),
+        .renderArea  = {.offset = {0, 0},
+                       .extent = swap_chain_->getSwapChainExtent()},
+    };
 
-        std::array<VkClearValue, 2> clear_values{};
-        clear_values[0].color        = {0.1f, 0.1f, 0.1f, 1.0f};
-        clear_values[1].depthStencil = {1.0f, 0};
+    std::array<VkClearValue, 2> clear_values{};
+    clear_values[0].color        = {0.1f, 0.1f, 0.1f, 1.0f};
+    clear_values[1].depthStencil = {1.0f, 0};
 
-        render_pass_info.clearValueCount =
-            static_cast<uint32_t>(clear_values.size());
-        render_pass_info.pClearValues = clear_values.data();
+    render_pass_info.clearValueCount =
+        static_cast<uint32_t>(clear_values.size());
+    render_pass_info.pClearValues = clear_values.data();
 
-        vkCmdBeginRenderPass(
-            command_buffer_[i], &render_pass_info, VK_SUBPASS_CONTENTS_INLINE);
-        pipeline_->bind(command_buffer_[i]);
-        model_->bind(command_buffer_[i]);
-        model_->draw(command_buffer_[i]);
+    vkCmdBeginRenderPass(command_buffer_[image_index],
+                         &render_pass_info,
+                         VK_SUBPASS_CONTENTS_INLINE);
+    pipeline_->bind(command_buffer_[image_index]);
+    model_->bind(command_buffer_[image_index]);
+    model_->draw(command_buffer_[image_index]);
 
-        vkCmdEndRenderPass(command_buffer_[i]);
-        if (vkEndCommandBuffer(command_buffer_[i]) != VK_SUCCESS)
-        {
-            throw std::runtime_error("Failed to record command buffer.");
-        }
+    vkCmdEndRenderPass(command_buffer_[image_index]);
+    if (vkEndCommandBuffer(command_buffer_[image_index]) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to record command buffer.");
     }
 }
+
 void FirstApp::draw_frame()
 {
     uint32_t image_index;
-    auto result = swap_chain_.acquireNextImage(&image_index);
+    auto result = swap_chain_->acquireNextImage(&image_index);
+
+    if (result == VK_ERROR_OUT_OF_DATE_KHR)
+    {
+        recreate_swap_chain();
+        return;
+    }
+
     if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
     {
         throw std::runtime_error("Failed to acquire swap chain image!");
     }
 
-    result = swap_chain_.submitCommandBuffers(&command_buffer_[image_index],
-                                              &image_index);
+    record_command_buffer(image_index);
+    result = swap_chain_->submitCommandBuffers(&command_buffer_[image_index],
+                                               &image_index);
+    if (const auto v = {VK_ERROR_OUT_OF_DATE_KHR, VK_SUBOPTIMAL_KHR};
+        std::ranges::any_of(v, [&result](auto val) { return result == val; }))
+    {
+        window_.reset_window_resized_flag();
+        recreate_swap_chain();
+        return;
+    }
+
     if (result != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to present swap chain image!");

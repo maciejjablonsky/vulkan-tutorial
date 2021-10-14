@@ -26,10 +26,13 @@ class FirstApp
     void create_pipeline();
     void create_command_buffers();
     void draw_frame();
+    void recreate_swap_chain();
+    void record_command_buffer(int image_index);
 
     LveWindow window_{WIDTH, HEIGHT, "Hello Vulkan!"};
     LveDevice device_{window_};
-    LveSwapChain swap_chain_{device_, window_.get_extent()};
+    std::unique_ptr<LveSwapChain> swap_chain_;
+    //LveSwapChain swap_chain_{device_, window_.get_extent()};
     std::unique_ptr<LvePipeline> pipeline_;
     VkPipelineLayout pipeline_layout_;
     std::pmr::vector<VkCommandBuffer> command_buffer_;
