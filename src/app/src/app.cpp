@@ -83,8 +83,12 @@ void FirstApp::create_pipeline_layout()
 
 void FirstApp::create_pipeline()
 {
-    auto pipeline_config = PipelineConfigInfo::create_default(
-        swap_chain_->width(), swap_chain_->height());
+    assert(swap_chain_ != nullptr &&
+           "Cannot create pipeline before swap chain");
+    assert(pipeline_layout_ != nullptr &&
+           "Cannot create pipeline before pipeline layout");
+    PipelineConfigInfo pipeline_config{};
+    LvePipeline::default_pipeline_config_info(pipeline_config);
     pipeline_config.render_pass     = swap_chain_->getRenderPass();
     pipeline_config.pipeline_layout = pipeline_layout_;
     pipeline_ =
@@ -104,7 +108,20 @@ void FirstApp::recreate_swap_chain()
     }
 
     vkDeviceWaitIdle(device_.device());
-    swap_chain_ = std::make_unique<LveSwapChain>(device_, extent);
+    if (swap_chain_ == nullptr)
+    {
+        swap_chain_ = std::make_unique<LveSwapChain>(device_, extent);
+    }
+    else
+    {
+        swap_chain_ = std::make_unique<LveSwapChain>(
+            device_, extent, std::move(swap_chain_));
+        if (swap_chain_->imageCount() != command_buffer_.size())
+        {
+            free_command_buffers();
+            create_command_buffers();
+        }
+    }
     create_pipeline();
 }
 
@@ -123,6 +140,15 @@ void FirstApp::create_command_buffers()
     {
         throw std::runtime_error("Failed to allocate command buffers.");
     }
+}
+
+void FirstApp::free_command_buffers()
+{
+    vkFreeCommandBuffers(device_.device(),
+                         device_.getCommandPool(),
+                         static_cast<uint32_t>(command_buffer_.size()),
+                         command_buffer_.data());
+    command_buffer_.clear();
 }
 
 void FirstApp::record_command_buffer(int image_index)
@@ -154,6 +180,20 @@ void FirstApp::record_command_buffer(int image_index)
     vkCmdBeginRenderPass(command_buffer_[image_index],
                          &render_pass_info,
                          VK_SUBPASS_CONTENTS_INLINE);
+
+    VkViewport viewport{};
+    viewport.x = 0.0f;
+    viewport.y = 0.0f;
+    viewport.width =
+        static_cast<float>(swap_chain_->getSwapChainExtent().width);
+    viewport.height =
+        static_cast<float>(swap_chain_->getSwapChainExtent().height);
+    viewport.minDepth = 0.0f;
+    viewport.maxDepth = 1.0f;
+    VkRect2D scissor{{0, 0}, swap_chain_->getSwapChainExtent()};
+    vkCmdSetViewport(command_buffer_[image_index], 0, 1, &viewport);
+    vkCmdSetScissor(command_buffer_[image_index], 0, 1, &scissor);
+
     pipeline_->bind(command_buffer_[image_index]);
     model_->bind(command_buffer_[image_index]);
     model_->draw(command_buffer_[image_index]);
@@ -185,7 +225,8 @@ void FirstApp::draw_frame()
     result = swap_chain_->submitCommandBuffers(&command_buffer_[image_index],
                                                &image_index);
     if (const auto v = {VK_ERROR_OUT_OF_DATE_KHR, VK_SUBOPTIMAL_KHR};
-        std::ranges::any_of(v, [&result](auto val) { return result == val; }) || window_.was_window_resized())
+        std::ranges::any_of(v, [&result](auto val) { return result == val; }) ||
+        window_.was_window_resized())
     {
         window_.reset_window_resized_flag();
         recreate_swap_chain();
