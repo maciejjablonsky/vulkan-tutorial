@@ -1,9 +1,17 @@
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <app/app.hpp>
 #include <array>
 #include <cmath>
+#include <glm/glm.hpp>
 
 namespace lve
 {
+struct SimplePushConstantData
+{
+    glm::vec2 offset;
+    alignas(16) glm::vec3 color;
+};
 
 FirstApp::FirstApp()
 {
@@ -66,12 +74,18 @@ void FirstApp::load_models()
 
 void FirstApp::create_pipeline_layout()
 {
+    VkPushConstantRange push_constant_range{};
+    push_constant_range.stageFlags =
+        VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+    push_constant_range.offset = 0;
+    push_constant_range.size   = sizeof(SimplePushConstantData);
+
     VkPipelineLayoutCreateInfo pipeline_layout_info{
         .sType                  = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
         .setLayoutCount         = 0,
         .pSetLayouts            = nullptr,
-        .pushConstantRangeCount = 0,
-        .pPushConstantRanges    = nullptr};
+        .pushConstantRangeCount = 1,
+        .pPushConstantRanges    = &push_constant_range};
     if (vkCreatePipelineLayout(device_.device(),
                                &pipeline_layout_info,
                                nullptr,
@@ -153,6 +167,9 @@ void FirstApp::free_command_buffers()
 
 void FirstApp::record_command_buffer(int image_index)
 {
+    static int frame = 0;
+    frame            = (frame + 1) % 100;
+
     VkCommandBufferBeginInfo begin_info{
         .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
     if (vkBeginCommandBuffer(command_buffer_[image_index], &begin_info) !=
@@ -196,7 +213,22 @@ void FirstApp::record_command_buffer(int image_index)
 
     pipeline_->bind(command_buffer_[image_index]);
     model_->bind(command_buffer_[image_index]);
-    model_->draw(command_buffer_[image_index]);
+
+    for (auto j = 0; j < 4; ++j)
+    {
+        SimplePushConstantData push{};
+        push.offset = {-0.5f + frame * 0.02f, -0.4f + j * 0.25f};
+        push.color  = {0.0f, 0.0f, 0.2f + 0.2f * j};
+
+        vkCmdPushConstants(command_buffer_[image_index],
+                           pipeline_layout_,
+                           VK_SHADER_STAGE_VERTEX_BIT |
+                               VK_SHADER_STAGE_FRAGMENT_BIT,
+                           0,
+                           sizeof(SimplePushConstantData),
+                           &push);
+        model_->draw(command_buffer_[image_index]);
+    }
 
     vkCmdEndRenderPass(command_buffer_[image_index]);
     if (vkEndCommandBuffer(command_buffer_[image_index]) != VK_SUCCESS)
