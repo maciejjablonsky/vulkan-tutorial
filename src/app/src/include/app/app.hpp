@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <rendering/device.hpp>
+#include <rendering/game_object.hpp>
 #include <rendering/model.hpp>
 #include <rendering/pipeline.hpp>
 #include <rendering/swap_chain.hpp>
@@ -21,7 +22,7 @@ class FirstApp
     ~FirstApp();
 
   private:
-    void load_models();
+    void load_game_objects();
     void create_pipeline_layout();
     void create_pipeline();
     void create_command_buffers();
@@ -29,6 +30,7 @@ class FirstApp
     void draw_frame();
     void recreate_swap_chain();
     void record_command_buffer(int image_index);
+    void render_game_objects(VkCommandBuffer command_buffer);
 
     LveWindow window_{WIDTH, HEIGHT, "Hello Vulkan!"};
     LveDevice device_{window_};
@@ -37,7 +39,7 @@ class FirstApp
     std::unique_ptr<LvePipeline> pipeline_;
     VkPipelineLayout pipeline_layout_;
     std::pmr::vector<VkCommandBuffer> command_buffer_;
-    std::unique_ptr<LveModel> model_;
+    std::vector<LveGameObject> game_objects_;
 };
 } // namespace lve
 

@@ -13,7 +13,9 @@ set(SOURCES
     include/rendering/swap_chain.hpp
     swap_chain.cpp
     include/rendering/model.hpp
-    model.cpp)
+    model.cpp
+    include/rendering/game_object.hpp
+    game_object.cpp)
 
 add_library(rendering ${SOURCES})
 target_link_libraries(rendering PUBLIC glfw Vulkan::Vulkan file fmt::fmt
