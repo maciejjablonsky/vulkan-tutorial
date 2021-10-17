@@ -15,10 +15,12 @@ set(SOURCES
     include/rendering/model.hpp
     model.cpp
     include/rendering/game_object.hpp
-    game_object.cpp)
+    include/rendering/renderer.hpp
+    renderer.cpp)
 
 add_library(rendering ${SOURCES})
-target_link_libraries(rendering PUBLIC glfw Vulkan::Vulkan file fmt::fmt
+add_library(lve::rendering ALIAS rendering)
+target_link_libraries(rendering PUBLIC glfw Vulkan::Vulkan lve::file fmt::fmt
                                        glm::glm)
 target_include_directories(rendering PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_compile_features(rendering PUBLIC cxx_std_20)
