@@ -16,7 +16,9 @@ set(SOURCES
     model.cpp
     include/rendering/game_object.hpp
     include/rendering/renderer.hpp
-    renderer.cpp)
+    renderer.cpp
+    include/rendering/simple_render_system.hpp
+    simple_render_system.cpp)
 
 add_library(rendering ${SOURCES})
 add_library(lve::rendering ALIAS rendering)
