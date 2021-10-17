@@ -18,7 +18,6 @@ class FirstApp
     void run();
 
     FirstApp();
-    ~FirstApp();
 
   private:
     void load_game_objects();
