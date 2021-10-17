@@ -68,7 +68,7 @@ def check_style(filepath):
         raise FormattingError("Failed to run 'dry run' format check!")
     elif process.stderr != b'':
         raise FormattingError(
-            'File is not properly formatted. Either use clang-format manually, via editor plugin, or run this script with "--inplace" flag')
+            f'File {filepath} is not properly formatted. Either use clang-format manually, via editor plugin, or run this script with "--inplace" flag')
 
 
 if __name__ == '__main__':
