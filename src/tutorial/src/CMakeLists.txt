@@ -5,6 +5,7 @@ find_package(Vulkan REQUIRED)
 
 add_executable(app 
     app.cpp
+    camera.cpp
     device.cpp
     main.cpp
     model.cpp
@@ -13,7 +14,7 @@ add_executable(app
     simple_render_system.cpp
     swap_chain.cpp
     window.cpp
-)
+ )
 
 target_link_libraries(app PRIVATE fmt::fmt glfw Vulkan::Vulkan lve::file glm::glm)
 target_compile_features(app PRIVATE cxx_std_20)

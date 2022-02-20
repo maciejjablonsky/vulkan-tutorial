@@ -32,6 +32,11 @@ class LveRenderer
         return is_frame_started_;
     }
 
+    float get_aspect_ratio() const
+    {
+        return swap_chain_->extentAspectRatio();
+    }
+
     VkCommandBuffer get_current_command_buffer() const
     {
         assert(is_frame_started_ &&

@@ -1,12 +1,12 @@
 #pragma once
 
 #include <memory>
+#include <tutorial/camera.hpp>
 #include <tutorial/device.hpp>
 #include <tutorial/game_object.hpp>
 #include <tutorial/model.hpp>
 #include <tutorial/pipeline.hpp>
 #include <vector>
-
 namespace lve
 {
 class SimpleRenderSystem
@@ -16,7 +16,8 @@ class SimpleRenderSystem
     ~SimpleRenderSystem();
 
     void render_game_objects(VkCommandBuffer command_buffer,
-                             std::pmr::vector<LveGameObject>& game_objects);
+                             std::pmr::vector<LveGameObject>& game_objects,
+                             const LveCamera& camera);
 
   private:
     void create_pipeline_layout();
