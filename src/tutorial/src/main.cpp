@@ -1,7 +1,7 @@
-#include <tutorial/app.hpp>
 #include <cstdlib>
 #include <fmt/format.h>
 #include <stdexcept>
+#include <tutorial/app.hpp>
 
 int main()
 {

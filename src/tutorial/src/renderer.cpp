@@ -2,8 +2,8 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
-#include <tutorial/renderer.hpp>
 #include <stdexcept>
+#include <tutorial/renderer.hpp>
 
 namespace lve
 {
@@ -139,7 +139,7 @@ void LveRenderer::begin_swap_chain_render_pass(VkCommandBuffer command_buffer)
         .renderPass  = swap_chain_->getRenderPass(),
         .framebuffer = swap_chain_->getFrameBuffer(current_image_index_),
         .renderArea  = {.offset = {0, 0},
-                       .extent = swap_chain_->getSwapChainExtent()},
+                        .extent = swap_chain_->getSwapChainExtent()},
     };
 
     std::array<VkClearValue, 2> clear_values{};

@@ -1,5 +1,5 @@
-#include <tutorial/window.hpp>
 #include <stdexcept>
+#include <tutorial/window.hpp>
 
 namespace lve
 {

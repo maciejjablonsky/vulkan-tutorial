@@ -47,20 +47,20 @@ void LvePipeline::create_graphics_pipeline(
     std::array<VkPipelineShaderStageCreateInfo, 2> shader_stages = {};
     shader_stages[0]                                             = {.sType =
                             VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-                        .pNext               = nullptr,
-                        .flags               = 0,
-                        .stage               = VK_SHADER_STAGE_VERTEX_BIT,
-                        .module              = vert_shader_module_,
-                        .pName               = "main",
-                        .pSpecializationInfo = nullptr};
+                                                                    .pNext               = nullptr,
+                                                                    .flags               = 0,
+                                                                    .stage               = VK_SHADER_STAGE_VERTEX_BIT,
+                                                                    .module              = vert_shader_module_,
+                                                                    .pName               = "main",
+                                                                    .pSpecializationInfo = nullptr};
     shader_stages[1]                                             = {.sType =
                             VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-                        .pNext               = nullptr,
-                        .flags               = 0,
-                        .stage               = VK_SHADER_STAGE_FRAGMENT_BIT,
-                        .module              = frag_shader_module_,
-                        .pName               = "main",
-                        .pSpecializationInfo = nullptr};
+                                                                    .pNext               = nullptr,
+                                                                    .flags               = 0,
+                                                                    .stage               = VK_SHADER_STAGE_FRAGMENT_BIT,
+                                                                    .module              = frag_shader_module_,
+                                                                    .pName               = "main",
+                                                                    .pSpecializationInfo = nullptr};
 
     const auto binding_descriptions =
         LveModel::Vertex::get_binding_description();

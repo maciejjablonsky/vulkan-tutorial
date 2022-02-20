@@ -72,6 +72,8 @@ void SimpleRenderSystem::render_game_objects(
 {
     pipeline_->bind(command_buffer);
 
+    const auto projection_view = camera.get_projection() * camera.get_view();
+
     for (auto& obj : game_objects)
     {
         obj.transform.rotation =
@@ -80,7 +82,7 @@ void SimpleRenderSystem::render_game_objects(
 
         SimplePushConstantData push{};
         push.color     = obj.color;
-        push.transform = camera.get_projection() * obj.transform.mat4();
+        push.transform = projection_view * obj.transform.mat4();
 
         vkCmdPushConstants(command_buffer,
                            pipeline_layout_,
