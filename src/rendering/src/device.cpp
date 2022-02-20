@@ -141,7 +141,6 @@ void LveDevice::pickPhysicalDevice()
         if (isDeviceSuitable(device))
         {
             physicalDevice = device;
-            break;
         }
     }
 
