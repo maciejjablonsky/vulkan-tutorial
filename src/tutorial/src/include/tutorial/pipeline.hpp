@@ -2,7 +2,7 @@
 
 #include <cstddef>
 #include <filesystem>
-#include <rendering/device.hpp>
+#include <tutorial/device.hpp>
 #include <vector>
 
 namespace lve

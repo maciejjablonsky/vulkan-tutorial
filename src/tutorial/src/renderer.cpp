@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
-#include <rendering/renderer.hpp>
+#include <tutorial/renderer.hpp>
 #include <stdexcept>
 
 namespace lve

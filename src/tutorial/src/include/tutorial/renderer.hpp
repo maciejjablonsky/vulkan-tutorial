@@ -2,10 +2,10 @@
 
 #include <cassert>
 #include <memory>
-#include <rendering/device.hpp>
-#include <rendering/model.hpp>
-#include <rendering/swap_chain.hpp>
-#include <rendering/window.hpp>
+#include <tutorial/device.hpp>
+#include <tutorial/model.hpp>
+#include <tutorial/swap_chain.hpp>
+#include <tutorial/window.hpp>
 #include <vector>
 
 namespace lve

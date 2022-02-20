@@ -1,6 +1,6 @@
 #include <array>
 #include <cassert>
-#include <rendering/model.hpp>
+#include <tutorial/model.hpp>
 
 namespace lve
 {

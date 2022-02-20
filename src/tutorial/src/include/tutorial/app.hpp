@@ -1,11 +1,11 @@
 #pragma once
 
 #include <memory>
-#include <rendering/device.hpp>
-#include <rendering/game_object.hpp>
-#include <rendering/model.hpp>
-#include <rendering/renderer.hpp>
-#include <rendering/window.hpp>
+#include <tutorial/device.hpp>
+#include <tutorial/game_object.hpp>
+#include <tutorial/model.hpp>
+#include <tutorial/renderer.hpp>
+#include <tutorial/window.hpp>
 #include <vector>
 
 namespace lve

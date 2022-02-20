@@ -1,11 +1,11 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#include <app/app.hpp>
+#include <tutorial/app.hpp>
 #include <array>
 #include <cmath>
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
-#include <rendering/simple_render_system.hpp>
+#include <tutorial/simple_render_system.hpp>
 
 namespace lve
 {

@@ -2,8 +2,8 @@
 #include <cassert>
 #include <file/io.hpp>
 #include <fmt/format.h>
-#include <rendering/model.hpp>
-#include <rendering/pipeline.hpp>
+#include <tutorial/model.hpp>
+#include <tutorial/pipeline.hpp>
 
 namespace lve
 {

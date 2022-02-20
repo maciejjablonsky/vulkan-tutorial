@@ -1,4 +1,4 @@
-#include <rendering/device.hpp>
+#include <tutorial/device.hpp>
 // std headers
 #include <cstring>
 #include <iostream>

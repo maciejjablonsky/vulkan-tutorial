@@ -1,4 +1,4 @@
-#include <rendering/swap_chain.hpp>
+#include <tutorial/swap_chain.hpp>
 
 // std
 #include <array>

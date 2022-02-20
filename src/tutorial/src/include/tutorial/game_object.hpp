@@ -2,7 +2,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <memory>
-#include <rendering/model.hpp>
+#include <tutorial/model.hpp>
 
 namespace lve
 {

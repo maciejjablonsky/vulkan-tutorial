@@ -4,7 +4,7 @@
 #include <cmath>
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
-#include <rendering/simple_render_system.hpp>
+#include <tutorial/simple_render_system.hpp>
 
 namespace lve
 {
