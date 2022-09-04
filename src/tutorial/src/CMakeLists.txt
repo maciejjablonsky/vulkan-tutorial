@@ -22,4 +22,5 @@ target_compile_features(app PRIVATE cxx_std_20)
 target_include_directories(app PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(app PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+target_compile_definitions(app PUBLIC SHADERS_DIRECTORY="${CMAKE_BINARY_DIR}/shaders")
 add_dependencies(app shaders)

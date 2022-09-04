@@ -2,9 +2,11 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <array>
 #include <cmath>
+#include <filesystem>
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 #include <tutorial/simple_render_system.hpp>
+
 
 namespace lve
 {
@@ -58,10 +60,11 @@ void SimpleRenderSystem::create_pipeline(VkRenderPass render_pass)
     LvePipeline::default_pipeline_config_info(pipeline_config);
     pipeline_config.render_pass     = render_pass;
     pipeline_config.pipeline_layout = pipeline_layout_;
+    auto shaders_path               = std::filesystem::path{SHADERS_DIRECTORY};
     pipeline_ =
         std::make_unique<LvePipeline>(device_,
-                                      "../../../shaders/simple_shader.vert.spv",
-                                      "../../../shaders/simple_shader.frag.spv",
+                                      shaders_path / "simple_shader.vert.spv",
+                                      shaders_path / "simple_shader.frag.spv",
                                       pipeline_config);
 }
 

@@ -30,4 +30,5 @@ foreach(SOURCE IN LISTS SHADERS_FILES)
         SPV_SHADERS
         ${CMAKE_BINARY_DIR}/shaders/${FILENAME}.spv)
 endforeach()
+
 add_custom_target(shaders ALL DEPENDS ${SPV_SHADERS})
